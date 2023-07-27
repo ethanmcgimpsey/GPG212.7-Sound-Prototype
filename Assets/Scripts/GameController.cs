@@ -8,72 +8,47 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    public List<Question> questionAndAnswers = new List<Question>();
-    public int questionCounter = 0;
-    public Button[] currentButton;
+    public GameObject[] Levels;
 
-    [SerializeField] private Question currentQuestion;
+    public AudioSource correctAudioSource;
+    public AudioSource incorrectAudioSource;
 
-    void Start()
+    [SerializeField] private int currentLevel;
+    [SerializeField] private int lives;
+
+    public void ResetGame()
     {
-        ResetRoom();
+        Application.LoadLevel(Application.loadedLevel);
     }
 
-    void Update()
+    public void CorrectAnswer()
     {
-
-    }
-
-    // Reset everything in the room
-    public void ResetRoom()
-    {
-        StartCoroutine(EnterRoom());
-    }
-
-    public IEnumerator EnterRoom()
-    {
-        float timer = 0;
-        while (timer < 2)
+        correctAudioSource.Play();
+        if (currentLevel + 1 != Levels.Length)
         {
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        currentQuestion = questionAndAnswers[questionCounter++];
-    }
+            Levels[currentLevel].SetActive(false);
 
-    public IEnumerator ExitRoom()
-    {
-        float timer = 0;
-        while (timer < 2)
-        {
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        if (questionCounter >= 9)
-        {
-            SceneManager.LoadScene("WinScreen");
+            currentLevel++;
+            Levels[currentLevel].SetActive(true);
         }
         else
         {
-            ResetRoom();
+            Scene activeScene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(2);
         }
-
     }
 
-    public void OnAnswer()
+    public void WrongAnswer()
     {
-        // DEBVUG LOG
-        // if (answerField.text.ToLower() == currentQuestion.answer.ToLower())
-        if (currentQuestion.answer = currentButton[questionCounter])
+        incorrectAudioSource.Play();
+        lives -= 1;
+        Levels[currentLevel].SetActive(false);
+        currentLevel++;
+        Levels[currentLevel].SetActive(true);
+        if (lives == 0)
         {
-            StartCoroutine(ExitRoom());
+            Scene activeScene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(3);
         }
-    }
-
-    [System.Serializable]
-    public class Question
-    {
-        public GameObject currentQuestion;
-        public Button answer;
     }
 }

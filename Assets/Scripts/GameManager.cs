@@ -25,6 +25,11 @@ public class GameManager : MonoBehaviour
         Scene activeScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(activeScene.buildIndex);
     }
+    public void MainMenu()
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(0);
+    }
     public void CustomLevel(string level)
     {
         Scene activeScene = SceneManager.GetActiveScene();
